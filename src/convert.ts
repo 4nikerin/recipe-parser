@@ -3,22 +3,27 @@ import { numbersMap } from './numbers';
 export function convertFromFraction(value: string) {
   // number comes in, for example: 1 1/3
   if (value && value.split(' ').length > 1) {
-    const [whole, fraction] = value.split(' ');
+    const [whole, fraction] = value.replace(/(\s*и\s*)|(\s+)/g, " ").split(' ');
     const [a, b] = fraction.split('/');
     const remainder = parseFloat(a) / parseFloat(b);
     const wholeAndFraction = parseInt(whole) ? parseInt(whole) + remainder : remainder;
-    return keepTwoDecimals(wholeAndFraction);
+    return keepThreeDecimals(wholeAndFraction);
   } else if (!value || value.split('-').length > 1) {
     return value;
   } else {
     const [a, b] = value.split('/');
-    return b ? keepTwoDecimals(parseFloat(a) / parseFloat(b)) : a;
+    return b ? keepThreeDecimals(parseFloat(a) / parseFloat(b)) : a;
   }
 }
 
 export function getFirstMatch(line: string, regex: RegExp) {
   const match = line.match(regex);
   return (match && match[0]) || '';
+}
+
+export function getAllMatches(line: string, regex: RegExp): string[] {
+  const matches = [...line.matchAll(regex)];
+  return matches.map(m => m[0]);
 }
 
 const unicodeObj: { [key: string]: string } = {
@@ -41,6 +46,7 @@ const unicodeObj: { [key: string]: string } = {
   '⅑': '1/9',
   '⅒': '1/10'
 };
+
 export function text2num(s: string, language: string) {
   const a = s.toString().split(/[\s-]+/);
   let values: number[] = [0, 0];
@@ -81,37 +87,43 @@ export function feach(w: string, g: number, n: number, language: string) {
 }
 
 export function findQuantityAndConvertIfUnicode(ingredientLine: string, language: string) {
-  const numericAndFractionRegex = /\b(\d+\/\d+|\d+\s\d+\/\d+|\d+\.\d+|\d+)\b/g; // consider only the numbers that have space and not those attached to words, such as "petra9"
-  //const numericRangeWithSpaceRegex = /^(\d+\-\d+)|^(\d+\s\-\s\d+)|^(\d+\sto\s\d+)/g; // for ex: "1 to 2" or "1 - 2"
-  const unicodeFractionRegex = /\d*[^\u0000-\u007F]+/g;
-  const onlyUnicodeFraction = /[^\u0000-\u007F]+/g;
+  const numericAndFractionRegex = /(\d+\s*и\s*\d+\/\d+|\d+\/\d+|\d+\s\d+\/\d+|\d+[\.,]\d+|\d+)/giu;
+  const numericRangeWithSpaceRegex = /\d+\s*([-–—]|to|или)\s*\d+/g; // for ex: "1 to 2" or "1 - 2"
+  const unicodeFractionRegex = /\d*\s*(и\s*)?[\u00BC-\u00BE\u2150-\u2189]/g;
+  const unicodeFractionGroups = /(\d*)\s*(и\s*)?([\u00BC-\u00BE\u2150-\u2189])/g;
   const wordUntilSpace = /[^\s]+/g;
 
   // found a unicode quantity inside our regex, for ex: '⅝'
   if (ingredientLine.match(unicodeFractionRegex)) {
-    const numericPart = getFirstMatch(ingredientLine, numericAndFractionRegex);
-    const unicodePart = getFirstMatch(ingredientLine, numericPart ? onlyUnicodeFraction : unicodeFractionRegex);
+    const matches = [...ingredientLine.matchAll(unicodeFractionGroups)];
+
+    const numericPart = matches[0]?.[1];
+    const unicodePart = matches[0]?.[3];
 
     // If there's a match for the unicodePart in our dictionary above
     if (unicodeObj[unicodePart]) {
-      return [`${numericPart} ${unicodeObj[unicodePart]}`, ingredientLine.replace(getFirstMatch(ingredientLine, unicodeFractionRegex), '').trim()];
+      const quantity = `${numericPart} ${unicodeObj[unicodePart]}`;
+      let restOfIngredient = ingredientLine.replace(getFirstMatch(ingredientLine, unicodeFractionRegex), '').trim();
+
+      return [quantity, restOfIngredient];
     }
   }
 
   // found a quantity range, for ex: "2 to 3"
-  // if (ingredientLine.match(numericRangeWithSpaceRegex)) {
-  //   const quantity = getFirstMatch(ingredientLine, numericRangeWithSpaceRegex).replace('to', '-').split(' ').join('');
-  //   const restOfIngredient = ingredientLine.replace(getFirstMatch(ingredientLine, numericRangeWithSpaceRegex), '').trim();
-  //   return [ingredientLine.match(numericRangeWithSpaceRegex) && quantity, restOfIngredient];
-  // }
+  if (ingredientLine.match(numericRangeWithSpaceRegex)) {
+    const quantity = getFirstMatch(ingredientLine, numericRangeWithSpaceRegex).replace('to', '-').replace('или', '-').split(' ').join('');
+    const restOfIngredient = ingredientLine.replace(getFirstMatch(ingredientLine, numericRangeWithSpaceRegex), '').trim();
+    return [ingredientLine.match(numericRangeWithSpaceRegex) && quantity, restOfIngredient];
+  }
 
   // found a numeric/fraction quantity, for example: "1 1/3"
   if (ingredientLine.match(numericAndFractionRegex)) {
-    const quantity = getFirstMatch(ingredientLine, numericAndFractionRegex);
+    const quantity = getFirstMatch(ingredientLine, numericAndFractionRegex).replace(",", ".");
     const restOfIngredient = ingredientLine.replace(getFirstMatch(ingredientLine, numericAndFractionRegex), '').trim()
     return [ingredientLine.match(numericAndFractionRegex) && quantity, restOfIngredient];
   }
-  else if (ingredientLine.match(wordUntilSpace)) {
+
+  if (ingredientLine.match(wordUntilSpace)) {
     const quantity = getFirstMatch(ingredientLine, wordUntilSpace);
     const quantityNumber = text2num(quantity.toLowerCase(), language)
     if (quantityNumber) {
@@ -120,16 +132,13 @@ export function findQuantityAndConvertIfUnicode(ingredientLine: string, language
     }
     else
       return [null, ingredientLine];
-
   }
 
   // no parse-able quantity found
-  else {
-    return [null, ingredientLine];
-  }
+  return [null, ingredientLine];
 }
 
-function keepTwoDecimals(val: number) {
+function keepThreeDecimals(val: number) {
   const strVal = val.toString();
-  return strVal.split('.')[0] + '.' + strVal.split('.')[1].substring(0, 2);
+  return strVal.split('.')[0] + '.' + strVal.split('.')[1].substring(0, 3);
 }

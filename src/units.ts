@@ -1,4 +1,8 @@
-export const engUnits = {
+type Units = { [key: string]: string[] }
+type PluralUnits = { [key: string]: string }
+type NameToSymbol = { [key: string]: string }
+
+export const engUnits: Units = {
   bag: ['bag', 'bags'],
   box: ['box'],
   can: ['can'],
@@ -24,9 +28,9 @@ export const engUnits = {
   slice: ['slice'],
   medium: ['Medium'],
   large: ['large', 'Large'],
-} as { [key: string]: string[] };
+};
 
-export const engPluralUnits = {
+export const engPluralUnits: PluralUnits = {
   cup: 'cups',
   gallon: 'gallons',
   ounce: 'ounces',
@@ -47,9 +51,9 @@ export const engPluralUnits = {
   can: 'cans',
   slice: 'slices',
   piece: 'pieces'
-} as { [key: string]: string };
+};
 
-export const engNameToSymbol = {
+export const engNameToSymbol: NameToSymbol = {
   cup: 'c',
   gallon: 'gal',
   ounce: 'oz',
@@ -70,12 +74,11 @@ export const engNameToSymbol = {
   can: '',
   slice: '',
   piece: ''
-} as { [key: string]: string };
+};
 
 export const engPreposition = ['of'];
 
-
-export const itaUnits = {
+export const itaUnits: Units = {
   barattolo: ['barattolo', 'barattoli'],
   bicchiere: ['bicchiere'],
   bottiglia: ['bottiglie', 'bottiglia'],
@@ -117,9 +120,9 @@ export const itaUnits = {
   bicchierino: ['bicchierino'],
 
   //noce: ['noce'],
-} as { [key: string]: string[] };
+};
 
-export const itaPluralUnits = {
+export const itaPluralUnits: PluralUnits = {
   barattolo: 'barattoli',
   bicchiere: 'bicchieri',
   bustina: 'bustine',
@@ -160,9 +163,9 @@ export const itaPluralUnits = {
   bicchierino: 'bicchierini',
   pugno: 'pugni'
   //noce: 'noci'
-} as { [key: string]: string };
+};
 
-export const itaNameToSymbol = {
+export const itaNameToSymbol: NameToSymbol = {
   bicchiere: '',
   bustina: '',
   cubetto: '',
@@ -187,13 +190,88 @@ export const itaNameToSymbol = {
   litro: 'lt',
   milligrammo: 'mg',
   millilitro: 'ml',
-} as { [key: string]: string };
+};
 
 export const itaPreposition = ['di', 'd\''];
 
-export const unitsMap = new Map();
+export const ruUnits: Units = {
+  грамм: ['г', 'г.', 'гр', 'гр.', 'грамм', 'грамма', 'граммов'],
+  килограмм: ['кг', 'кг.', 'килограмм', 'килограмма', 'килограммов'],
+  миллиграмм: ['мг', 'мг.', 'миллиграмм', 'миллиграмма', 'миллиграммов'],
+  литр: ['л', 'л.', 'литр', 'литра', 'литров'],
+  миллилитр: ['мл', 'мл.', 'миллилитр', 'миллилитра', 'миллилитров'],
+  'чайная ложка': ['ч.л', 'ч. л', 'ч л.', 'ч л', 'ч. л.', 'ч.л.', 'ч. ложка', 'ч ложка', 'чайная ложка', 'чайн. ложка', 'чайная', 'чайной ложки', 'чайных ложек'],
+  'столовая ложка': ['ст.л', 'ст. л', 'ст л.', 'ст л', 'ст. л.', 'ст.л.', 'ст. ложка', 'ст ложка', 'столовая ложка', 'столовая', 'столовой ложки', 'столовых ложек', 'ложка', 'ложки', 'ложек'],
+  стакан: ['стакан', 'стакана', 'стаканов', 'cт', 'ст.'],
+  щепотка: ['щепотка', 'щепотки', 'щепоток', 'щеп', 'щеп.'],
+  пучок: ['пучок', 'пучка', 'пучков'],
+  штука: ['шт', 'шт.', 'штука', 'штуки', 'штук'],
+  ломтик: ['ломтик', 'ломтика', 'ломтиков'],
+  долька: ['долька', 'дольки', 'долек'],
+  банка: ['банка', 'банки', 'банок'],
+  упаковка: ['упаковка', 'упаковки', 'упаковок'],
+  кусок: ['кусок', 'куска', 'кусков', 'кусочков'],
+  зубчик: ['зубчик', 'зубчика', 'зубчиков', 'зуб', 'зубка', 'зубков'],
+  головка: ['головка', 'головки', 'головок'],
+  жменька: ['жменька', 'жменьки', 'жменек'],
+  веточка: ['веточка', 'веточки', 'веточек', 'ветка', 'ветки', 'веточек'],
+  'по вкусу': ['по вкусу', 'на вкус', 'по желанию', 'сколько нужно', 'сколько угодно'] // спец. случай
+};
+
+export const ruPluralUnits: PluralUnits = {
+  грамм: 'граммы',
+  килограмм: 'килограммы',
+  миллиграмм: 'миллиграммы',
+  литр: 'литры',
+  миллилитр: 'миллилитры',
+  'чайная ложка': 'чайные ложки',
+  'столовая ложка': 'столовые ложки',
+  стакан: 'стаканы',
+  щепотка: 'щепотки',
+  пучок: 'пучки',
+  штука: 'штуки',
+  ломтик: 'ломтики',
+  долька: 'дольки',
+  банка: 'банки',
+  упаковка: 'упаковки',
+  кусок: 'куски',
+  зубчик: 'зубчики',
+  головка: 'головки',
+  жменька: 'жменьки',
+  веточка: 'веточки',
+  'по вкусу': 'по вкусу',
+};
+
+export const ruNameToSymbol: NameToSymbol = {
+  грамм: 'г',
+  килограмм: 'кг',
+  миллиграмм: 'мг',
+  литр: 'л',
+  миллилитр: 'мл',
+  'чайная ложка': 'ч. л.',
+  'столовая ложка': 'ст. л.',
+  стакан: '',
+  щепотка: '',
+  пучок: '',
+  штука: 'шт',
+  ломтик: '',
+  долька: '',
+  банка: '',
+  упаковка: '',
+  кусок: '',
+  зубчик: '',
+  головка: '',
+  жменька: '',
+  веточка: '',
+  'по вкусу': ''
+};
+
+export const ruPreposition = ['из', 'без', 'от', 'по', 'для', 'с', 'со', 'на', 'в', 'к', 'о', 'об', 'у', 'при', 'около'];
+
+export const unitsMap = new Map<string, [Units, PluralUnits, string[], NameToSymbol]>();
 unitsMap.set("eng", [engUnits, engPluralUnits, engPreposition, engNameToSymbol]);
 unitsMap.set("ita", [itaUnits, itaPluralUnits, itaPreposition, itaNameToSymbol]);
+unitsMap.set("ru", [ruUnits, ruPluralUnits, ruPreposition, ruNameToSymbol]);
 
 export function extractAllUnits(language: string): string[] {
   const unitData = unitsMap.get(language);
