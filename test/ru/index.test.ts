@@ -102,12 +102,12 @@ describe('recipe parser ru', () => {
     expect(parse('Крупная соль', 'ru')).to.deep.equal({
         ingredient: 'крупная соль',
         extraInfo: null,
-        quantity: 0,
         unit: null,
         unitPlural: null,
         symbol: null,
-        minQty: 0,
-        maxQty: 0,
+        quantity: null,
+        minQty: null,
+        maxQty: null,
     });
   });
 
@@ -321,9 +321,9 @@ describe('recipe parser ru', () => {
       symbol: null,
       ingredient: 'сыр моцарела тёртый',
       extraInfo: null,
-      quantity: 0,
-      minQty: 0,
-      maxQty: 0,
+      quantity: null,
+      minQty: null,
+      maxQty: null,
     });
   });
 
@@ -332,7 +332,7 @@ describe('recipe parser ru', () => {
       unit: 'чайная ложка',
       unitPlural: 'чайные ложки',
       symbol: 'ч. л.',
-      ingredient: 'приправа «тако»',
+      ingredient: 'приправа "тако"',
       extraInfo: null,
       quantity: 1.5,
       minQty: 1.5,
@@ -464,9 +464,9 @@ describe('recipe parser ru', () => {
       symbol: null,
       ingredient: 'майонез и резаный зеленый лук',
       extraInfo: '(сметана)',
-      quantity: 0,
-      minQty: 0,
-      maxQty: 0,
+      quantity: null,
+      minQty: null,
+      maxQty: null,
     });
   });
 
@@ -563,14 +563,14 @@ describe('recipe parser ru', () => {
 
   it('"Чеснок (нечищеный) - 2 головки (около 20 зубков)"', () => {
     expect(parse('Чеснок (нечищеный) - 2 головки (около 20 зубков)', 'ru')).to.deep.equal({
-      unit: 'головка',
-      unitPlural: 'головки',
+      unit: 'зубчик',
+      unitPlural: 'зубчики',
       symbol: null,
       ingredient: 'чеснок',
       extraInfo: '(нечищеный) (около 20 зубков)',
-      quantity: 2,
-      minQty: 2,
-      maxQty: 2,
+      quantity: 20,
+      minQty: 20,
+      maxQty: 20,
     });
   });
 
@@ -633,9 +633,9 @@ describe('recipe parser ru', () => {
       symbol: null,
       ingredient: 'молоко или сметана',
       extraInfo: null,
-      quantity: 0,
-      minQty: 0,
-      maxQty: 0,
+      quantity: null,
+      minQty: null,
+      maxQty: null,
     });
   });
 
@@ -693,27 +693,27 @@ describe('recipe parser ru', () => {
 
   it('"Нут консервированный (без жидкости) – 1 банка (420 г)"', () => {
     expect(parse('Нут консервированный (без жидкости) – 1 банка (420 г)', 'ru')).to.deep.equal({
-      unit: 'банка',
-      unitPlural: 'банки',
-      symbol: null,
+      unit: 'грамм',
+      unitPlural: 'граммы',
+      symbol: 'г',
       ingredient: 'нут консервированный',
       extraInfo: '(без жидкости) (420 г)',
-      quantity: 1,
-      minQty: 1,
-      maxQty: 1,
+      quantity: 420,
+      minQty: 420,
+      maxQty: 420,
     });
   });
 
   it('"Тортеллини (итальянские пельмени) с сыром, приготовленные согласно инструкции на упаковке и охлажденные – 1 упаковка (560 г)"', () => {
     expect(parse('Тортеллини (итальянские пельмени) с сыром, приготовленные согласно инструкции на упаковке и охлажденные – 1 упаковка (560 г)', 'ru')).to.deep.equal({
-      unit: 'упаковка',
-      unitPlural: 'упаковки',
-      symbol: null,
-      ingredient: 'тортеллини с сыромприготовленные согласно инструкции на упаковке и охлажденные',
+      unit: 'грамм',
+      unitPlural: 'граммы',
+      symbol: 'г',
+      ingredient: 'тортеллини с сыром, приготовленные согласно инструкции на упаковке и охлажденные',
       extraInfo: '(итальянские пельмени) (560 г)',
-      quantity: 1,
-      minQty: 1,
-      maxQty: 1,
+      quantity: 560,
+      minQty: 560,
+      maxQty: 560,
     });
   });
 
@@ -733,7 +733,7 @@ describe('recipe parser ru', () => {
   it('"Ванилин - 1 пакетик (2 г)"', () => {
     expect(parse('Ванилин - 1 пакетик (2 г)', 'ru')).to.deep.equal({
       unit: 'грамм',
-      unitPlural: 'грамм',
+      unitPlural: 'граммы',
       symbol: 'г',
       ingredient: 'ванилин',
       extraInfo: null,

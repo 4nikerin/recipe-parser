@@ -1,6 +1,6 @@
 {
   "name": "recipe-ingredient-parser-multi-lang",
-  "version": "1.6.0",
+  "version": "1.6.1",
   "description": "Natural language parser for recipes and ingredient lists, incl. combining ingredients for english, italian and russian languages",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",

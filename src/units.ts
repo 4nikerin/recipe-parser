@@ -1,6 +1,7 @@
 type Units = { [key: string]: string[] }
 type PluralUnits = { [key: string]: string }
-type NameToSymbol = { [key: string]: string }
+type NameToSymbol = { [key: string]: string | null }
+type UnitsSort = string[];
 
 export const engUnits: Units = {
   bag: ['bag', 'bags'],
@@ -250,30 +251,52 @@ export const ruNameToSymbol: NameToSymbol = {
   миллилитр: 'мл',
   'чайная ложка': 'ч. л.',
   'столовая ложка': 'ст. л.',
-  стакан: '',
-  щепотка: '',
-  пучок: '',
+  стакан: null,
+  щепотка: null,
+  пучок: null,
   штука: 'шт',
-  ломтик: '',
-  долька: '',
-  банка: '',
-  упаковка: '',
-  кусок: '',
-  зубчик: '',
-  головка: '',
-  жменька: '',
-  веточка: '',
-  'по вкусу': ''
+  ломтик: null,
+  долька: null,
+  банка: null,
+  упаковка: null,
+  кусок: null,
+  зубчик: null,
+  головка: null,
+  жменька: null,
+  веточка: null,
+  'по вкусу': null,
 };
+
+export const ruUnitsSort: UnitsSort = [
+  'грамм',
+  'килограмм',
+  'миллиграмм',
+  'литр',
+  'миллилитр',
+  'чайная ложка',
+  'столовая ложка',
+  'стакан',
+  'щепотка',
+  'пучок',
+  'штука',
+  'ломтик',
+  'долька',
+  'банка',
+  'упаковка',
+  'кусок',
+  'зубчик',
+  'головка',
+  'жменька',
+  'веточка',
+  'по вкусу',
+];
 
 export const ruPreposition = ['из', 'без', 'от', 'по', 'для', 'с', 'со', 'на', 'в', 'к', 'о', 'об', 'у', 'при', 'около'];
 
-export const unitsMap = new Map<string, [Units, PluralUnits, string[], NameToSymbol]>();
-unitsMap.set("eng", [engUnits, engPluralUnits, engPreposition, engNameToSymbol]);
-unitsMap.set("ita", [itaUnits, itaPluralUnits, itaPreposition, itaNameToSymbol]);
-unitsMap.set("ru", [ruUnits, ruPluralUnits, ruPreposition, ruNameToSymbol]);
+export const unitsMap = new Map<string, [Units, PluralUnits, string[], NameToSymbol, UnitsSort]>();
+unitsMap.set("ru", [ruUnits, ruPluralUnits, ruPreposition, ruNameToSymbol, ruUnitsSort]);
 
-export function extractAllUnits(language: string): string[] {
+/* export function extractAllUnits(language: string): string[] {
   const unitData = unitsMap.get(language);
   if (!unitData) return [];
 
@@ -296,4 +319,4 @@ export function extractAllUnits(language: string): string[] {
   }
 
   return Array.from(flattenedUnits);
-}
+} */
