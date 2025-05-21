@@ -13,6 +13,9 @@ export interface Ingredient {
   maxQty: string | null;
 }
 
+export const lookBehind = "(?<!\\p{L})";
+export const lookForward = "(?!\\p{L})";
+
 export function parse(recipeString: string, language: string) {
   const unitMap = unitsMap.get(language);
   const units = unitMap?.[0] ?? {};
@@ -28,8 +31,6 @@ export function parse(recipeString: string, language: string) {
     return acc;
   }, []).join("|");
 
-  const lookBehind = "(?<!\\p{L})";
-  const lookForward = "(?!\\p{L})";
   const numberMask = "[\u00BC-\u00BE\u2150-\u2189]|\\d+(?:[\\.,\\/]\\d*)?";
   const separatorQuantAndFr = "\\s*(" + lookBehind + "и" + lookForward + ")?\\s*";
 
@@ -39,9 +40,11 @@ export function parse(recipeString: string, language: string) {
   const toFractionMask = "(?<toFraction>" + numberMask + ")?";
   const unitMask = lookBehind + "(?<unit>" + variants + ")?" + lookForward;
 
-  const regexp = new RegExp("(?:" + fromQuantityMask + separatorQuantAndFr + fromFractionMask + "\\s*(?:[-–—]|или)?\\s*(?:" + toQuantityMask + separatorQuantAndFr + toFractionMask + ")?(?:(?:\\s|[^\\p{L}])*?(?<unit>(?<!" + variants + ")" + variants + ")" + lookForward + ")?)|(?:" + unitMask + ")", "gui");
+  const regexp = new RegExp("(?:(?<ignoreQuantity>по\\s*)?" + fromQuantityMask + separatorQuantAndFr + fromFractionMask + "\\s*(?:[-–—]|или)?\\s*(?:" + toQuantityMask + separatorQuantAndFr + toFractionMask + ")?(?:(?:\\s|[^\\p{L}])*?(?<unit>(?<!" + variants + ")" + variants + ")" + lookForward + ")?)|(?:" + unitMask + ")", "gui");
+
   const result = [...recipeString.matchAll(regexp)].filter((item) => (
-    !Object.values(item.groups ?? {}).every((value) => value == null)
+    !item.groups?.ignoreQuantity
+    && !Object.values(item.groups ?? {}).every((value) => value == null)
   ));
 
   let resultMatch = result.sort((x, y) => {
@@ -68,7 +71,7 @@ export function parse(recipeString: string, language: string) {
   [minQty, maxQty] = [minQty ?? maxQty, maxQty ?? minQty];
 
   const quantity = [...new Set([minQty, maxQty])].filter(Number).join("-") || null;
-  const {ingredient, extraInfo} = convert.parseIngredient(recipeString, regexp);
+  const {ingredient, extraInfo} = convert.parseIngredient(recipeString, regexp, language);
   const unitPlural = unit ? pluralUnits[unit] ?? null : null;
 
   return {

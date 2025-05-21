@@ -1,5 +1,6 @@
 // import { numbersMap } from './numbers';
 import { unitsMap } from "./units";
+import { lookBehind, lookForward } from "./index";
 
 function convertFromFraction(value: string) {
   // number comes in, for example: 1 1/3
@@ -111,17 +112,34 @@ export function fixUnit(value: string | undefined, language: string) {
   return null;
 };
 
-export function parseIngredient(input: string, regexp: RegExp) {
-  // 1. Находим все скобочные пояснения и собираем их в массив
-  const parenthesisMatches = input.match(/\([^()]*\)/g);
-  const extraInfo = parenthesisMatches ? parenthesisMatches.join(' ') : null;
+export function parseIngredient(input: string, regexp: RegExp, language: string) {
+  const unitMap = unitsMap.get(language);
+  const prepositions = unitMap?.[2] ?? [];
+  const prepositionsRegexp = new RegExp("\\(\\s*" + lookBehind + "(" + prepositions.map((item) => (
+    item.split(" ").join("\\s+")
+  )).join("|") + ")" + lookForward + "\\s*\\)", "gui");
+
+  const value = input.replace(regexp, '');
+
+  // Находим все скобочные пояснения и собираем их в массив
+  const parenthesisMatches = value.match(/\(([^()]+)\)/g);
+  const parenthesisMatchesValue = parenthesisMatches?.reduce<string[]>((acc, s) => {
+    const val = s.replace(prepositionsRegexp, '').replace(/^\(|\)$/g, "");
+    if (val.trim().length) {
+      acc.push(val);
+    }
+    return acc;
+  }, []).join('; ');
+  const extraInfo = parenthesisMatchesValue
+    ? `(${parenthesisMatchesValue})` || null
+    : null;
 
   // Удаляем все скобки из строки
-  const withoutParenthesis = input.replace(/\([^()]*\)/g, '');
+  const withoutParenthesis = value.replace(/\([^()]*\)/g, '');
 
   const ingredient = withoutParenthesis
     .replace(regexp, '')
-    .replace(/\s*[-–—:]\s*|\s+/g, ' ')
+    .replace(/\s*[-–—:]\s*$|\s+/g, ' ')
     .replace(/[«»]/g, '"')
     .trim()
     .toLowerCase();
