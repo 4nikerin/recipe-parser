@@ -3,47 +3,47 @@ import { parse } from '../../src/index';
 
 describe('recipe parser ru', () => {
   it('returns an object', () => {
-    expect(typeof parse('1 стакан воды', 'ru')).to.equal('object');
+    expect(typeof parse('1 стакан воды')).to.equal('object');
   });
 
   describe('translates the quantity', () => {
     it('of "соль по вкусу"', () => {
-      expect(parse('соль по вкусу', 'ru').unit).to.equal('по вкусу');
+      expect(parse('соль по вкусу').unit).to.equal('по вкусу');
     });
     it('of "Соль по вкусу"', () => {
-      expect(parse('Соль по вкусу', 'ru').unit).to.equal('по вкусу');
+      expect(parse('Соль по вкусу').unit).to.equal('по вкусу');
     });
     it('of "1 чайная ложка соли"', () => {
-      expect(parse('1 чайная ложка соли', 'ru').quantity).to.equal(1);
+      expect(parse('1 чайная ложка соли').quantity).to.equal(1);
     });
     it('of "1.5 чайной ложки соли"', () => {
-      expect(parse('1.5 чайной ложки соли', 'ru').quantity).to.equal(1.5);
+      expect(parse('1.5 чайной ложки соли').quantity).to.equal(1.5);
     });
     it('of "1 1/2 чайной ложки соли"', () => {
-      expect(parse('1 1/2 чайной ложки соли', 'ru').quantity).to.equal(1.5);
+      expect(parse('1 1/2 чайной ложки соли').quantity).to.equal(1.5);
     });
     it('of "1/3 чайной ложки соли"', () => {
-      expect(parse('1/3 чайной ложки соли', 'ru').quantity).to.equal(0.333);
+      expect(parse('1/3 чайной ложки соли').quantity).to.equal(0.333);
     });
     it('of "1/2 чайной ложки соли"', () => {
-      expect(parse('1/2 чайной ложки соли', 'ru').quantity).to.equal(0.5);
+      expect(parse('1/2 чайной ложки соли').quantity).to.equal(0.5);
     });
     it('of "10 1/2 чайной ложки соли"', () => {
-      expect(parse('10 1/2 чайной ложки соли', 'ru').quantity).to.equal(10.5);
+      expect(parse('10 1/2 чайной ложки соли').quantity).to.equal(10.5);
     });
     it('of "about 1/2 чайной ложки соли"', () => {
-      expect(parse('about 1/2 чайной ложки соли', 'ru').quantity).to.equal(0.5);
+      expect(parse('about 1/2 чайной ложки соли').quantity).to.equal(0.5);
     });
 
     /* describe('translates the quantity from string to number', () => {
       it('одна чайная ложка соли"', () => {
-        expect(parse('одна чайная ложка соли', 'ru').quantity).to.equal(1);
+        expect(parse('одна чайная ложка соли').quantity).to.equal(1);
       });
       it('двадцать один стакан соли"', () => {
-        expect(parse('двадцать один стакан соли', 'ru').quantity).to.equal(21);
+        expect(parse('двадцать один стакан соли').quantity).to.equal(21);
       });
       it('пять чайных ложек соли"', () => {
-        expect(parse('пять чайных ложек соли', 'ru').quantity).to.equal(5);
+        expect(parse('пять чайных ложек соли').quantity).to.equal(5);
       });
     }); */
 
@@ -55,7 +55,7 @@ describe('recipe parser ru', () => {
         const element = unicodeAmounts[u];
         const expectedAmount = unicodeExpectedAmounts[u];
         it(`${element} to ${expectedAmount}`, () => {
-          expect(parse(`${element} (чайная ложка соли)`, 'ru').quantity).to.equal(expectedAmount);
+          expect(parse(`${element} (чайная ложка соли)`).quantity).to.equal(expectedAmount);
         });
       }
 
@@ -66,13 +66,13 @@ describe('recipe parser ru', () => {
         const element = mixedValues[u];
         const expectedAmount = (Number(mixedExpectedValues[u]) + Number(unicodeExpectedAmounts[u]));
         it(`${element} to ${expectedAmount}`, () => {
-          expect(parse(`${element} (чайная ложка соли)`, 'ru').quantity).to.equal(expectedAmount);
+          expect(parse(`${element} (чайная ложка соли)`).quantity).to.equal(expectedAmount);
         });
       }
     });
 
     it('doesn\'t freak out if a strange unicode character is present', () => {
-      expect(parse('1/3 стакана сахара', 'ru')).to.deep.equal({
+      expect(parse('1/3 стакана сахара')).to.deep.equal({
         quantity: 0.333,
         unit: 'стакан',
         unitPlural: 'стаканы',
@@ -86,7 +86,7 @@ describe('recipe parser ru', () => {
   });
 
   it('translates unit when no unit provided', () => {
-    expect(parse('1 соль', 'ru')).to.deep.equal({
+    expect(parse('1 соль')).to.deep.equal({
       unit: null,
       unitPlural: null,
       symbol: null,
@@ -99,7 +99,7 @@ describe('recipe parser ru', () => {
   });
 
   it('doesn\'t explode when no unit and no quantity provided', () => {
-    expect(parse('Крупная соль', 'ru')).to.deep.equal({
+    expect(parse('Крупная соль')).to.deep.equal({
         ingredient: 'крупная соль',
         extraInfo: null,
         unit: null,
@@ -113,131 +113,131 @@ describe('recipe parser ru', () => {
 
   describe('translates the abbreviated units of', () => {
     it('"1 грамм соли"', () => {
-      expect(parse('1 г соли', 'ru').unit).to.equal('грамм');
-      expect(parse('1 г. соли', 'ru').unit).to.equal('грамм');
-      expect(parse('1 гр соли', 'ru').unit).to.equal('грамм');
-      expect(parse('1 гр. соли', 'ru').unit).to.equal('грамм');
-      expect(parse('1 грамм соли', 'ru').unit).to.equal('грамм');
-      expect(parse('1 грамма соли', 'ru').unit).to.equal('грамм');
-      expect(parse('5 граммов соли', 'ru').unit).to.equal('грамм');
+      expect(parse('1 г соли').unit).to.equal('грамм');
+      expect(parse('1 г. соли').unit).to.equal('грамм');
+      expect(parse('1 гр соли').unit).to.equal('грамм');
+      expect(parse('1 гр. соли').unit).to.equal('грамм');
+      expect(parse('1 грамм соли').unit).to.equal('грамм');
+      expect(parse('1 грамма соли').unit).to.equal('грамм');
+      expect(parse('5 граммов соли').unit).to.equal('грамм');
     });
     it('"1 килограмм соли"', () => {
-      expect(parse('1 кг соли', 'ru').unit).to.equal('килограмм');
-      expect(parse('1 кг. соли', 'ru').unit).to.equal('килограмм');
-      expect(parse('1 килограмм соли', 'ru').unit).to.equal('килограмм');
-      expect(parse('1 килограмма соли', 'ru').unit).to.equal('килограмм');
-      expect(parse('5 килограммов соли', 'ru').unit).to.equal('килограмм');
+      expect(parse('1 кг соли').unit).to.equal('килограмм');
+      expect(parse('1 кг. соли').unit).to.equal('килограмм');
+      expect(parse('1 килограмм соли').unit).to.equal('килограмм');
+      expect(parse('1 килограмма соли').unit).to.equal('килограмм');
+      expect(parse('5 килограммов соли').unit).to.equal('килограмм');
     });
     it('"1 миллиграмм соли"', () => {
-      expect(parse('1 мг соли', 'ru').unit).to.equal('миллиграмм');
-      expect(parse('1 мг. соли', 'ru').unit).to.equal('миллиграмм');
-      expect(parse('1 миллиграмм соли', 'ru').unit).to.equal('миллиграмм');
-      expect(parse('1 миллиграмма соли', 'ru').unit).to.equal('миллиграмм');
-      expect(parse('5 миллиграммов соли', 'ru').unit).to.equal('миллиграмм');
+      expect(parse('1 мг соли').unit).to.equal('миллиграмм');
+      expect(parse('1 мг. соли').unit).to.equal('миллиграмм');
+      expect(parse('1 миллиграмм соли').unit).to.equal('миллиграмм');
+      expect(parse('1 миллиграмма соли').unit).to.equal('миллиграмм');
+      expect(parse('5 миллиграммов соли').unit).to.equal('миллиграмм');
     });
     it('"1 литр молока"', () => {
-      expect(parse('1 л молока', 'ru').unit).to.equal('литр');
-      expect(parse('1 л. молока', 'ru').unit).to.equal('литр');
-      expect(parse('1 литр молока', 'ru').unit).to.equal('литр');
-      expect(parse('1 литра молока', 'ru').unit).to.equal('литр');
-      expect(parse('5 литров молока', 'ru').unit).to.equal('литр');
+      expect(parse('1 л молока').unit).to.equal('литр');
+      expect(parse('1 л. молока').unit).to.equal('литр');
+      expect(parse('1 литр молока').unit).to.equal('литр');
+      expect(parse('1 литра молока').unit).to.equal('литр');
+      expect(parse('5 литров молока').unit).to.equal('литр');
     });
     it('"1 миллилитр молока"', () => {
-      expect(parse('1 мл молока', 'ru').unit).to.equal('миллилитр');
-      expect(parse('1 мл. молока', 'ru').unit).to.equal('миллилитр');
-      expect(parse('1 миллилитр молока', 'ru').unit).to.equal('миллилитр');
-      expect(parse('1 миллилитра молока', 'ru').unit).to.equal('миллилитр');
-      expect(parse('5 миллилитров молока', 'ru').unit).to.equal('миллилитр');
+      expect(parse('1 мл молока').unit).to.equal('миллилитр');
+      expect(parse('1 мл. молока').unit).to.equal('миллилитр');
+      expect(parse('1 миллилитр молока').unit).to.equal('миллилитр');
+      expect(parse('1 миллилитра молока').unit).to.equal('миллилитр');
+      expect(parse('5 миллилитров молока').unit).to.equal('миллилитр');
     });
     it('"1 чайная ложка соли"', () => {
-      expect(parse('1 ч.л соли', 'ru').unit).to.equal('чайная ложка');
-      expect(parse('1 ч. л соли', 'ru').unit).to.equal('чайная ложка');
-      expect(parse('1 ч л. соли', 'ru').unit).to.equal('чайная ложка');
-      expect(parse('1 ч л соли', 'ru').unit).to.equal('чайная ложка');
-      expect(parse('1 ч. л. соли', 'ru').unit).to.equal('чайная ложка');
-      expect(parse('1 ч.л. соли', 'ru').unit).to.equal('чайная ложка');
-      expect(parse('1 ч. ложка соли', 'ru').unit).to.equal('чайная ложка');
-      expect(parse('1 ч ложка соли', 'ru').unit).to.equal('чайная ложка');
-      expect(parse('1 чайная ложка соли', 'ru').unit).to.equal('чайная ложка');
-      expect(parse('1 чайн. ложка соли', 'ru').unit).to.equal('чайная ложка');
-      expect(parse('1 чайная соли', 'ru').unit).to.equal('чайная ложка');
-      expect(parse('2 чайной ложки соли', 'ru').unit).to.equal('чайная ложка');
-      expect(parse('5 чайных ложек соли', 'ru').unit).to.equal('чайная ложка');
+      expect(parse('1 ч.л соли').unit).to.equal('чайная ложка');
+      expect(parse('1 ч. л соли').unit).to.equal('чайная ложка');
+      expect(parse('1 ч л. соли').unit).to.equal('чайная ложка');
+      expect(parse('1 ч л соли').unit).to.equal('чайная ложка');
+      expect(parse('1 ч. л. соли').unit).to.equal('чайная ложка');
+      expect(parse('1 ч.л. соли').unit).to.equal('чайная ложка');
+      expect(parse('1 ч. ложка соли').unit).to.equal('чайная ложка');
+      expect(parse('1 ч ложка соли').unit).to.equal('чайная ложка');
+      expect(parse('1 чайная ложка соли').unit).to.equal('чайная ложка');
+      expect(parse('1 чайн. ложка соли').unit).to.equal('чайная ложка');
+      expect(parse('1 чайная соли').unit).to.equal('чайная ложка');
+      expect(parse('2 чайной ложки соли').unit).to.equal('чайная ложка');
+      expect(parse('5 чайных ложек соли').unit).to.equal('чайная ложка');
     });
     it('"1 столовая ложка соли"', () => {
-      expect(parse('1 ст.л соли', 'ru').unit).to.equal('столовая ложка');
-      expect(parse('1 ст. л соли', 'ru').unit).to.equal('столовая ложка');
-      expect(parse('1 ст л. соли', 'ru').unit).to.equal('столовая ложка');
-      expect(parse('1 ст л соли', 'ru').unit).to.equal('столовая ложка');
-      expect(parse('1 ст. л. соли', 'ru').unit).to.equal('столовая ложка');
-      expect(parse('1 ст.л. соли', 'ru').unit).to.equal('столовая ложка');
-      expect(parse('1 ст. ложка соли', 'ru').unit).to.equal('столовая ложка');
-      expect(parse('1 ст ложка соли', 'ru').unit).to.equal('столовая ложка');
-      expect(parse('1 столовая ложка соли', 'ru').unit).to.equal('столовая ложка');
-      expect(parse('1 столовая соли', 'ru').unit).to.equal('столовая ложка');
-      expect(parse('2 столовой ложки соли', 'ru').unit).to.equal('столовая ложка');
-      expect(parse('5 столовых ложек соли', 'ru').unit).to.equal('столовая ложка');
+      expect(parse('1 ст.л соли').unit).to.equal('столовая ложка');
+      expect(parse('1 ст. л соли').unit).to.equal('столовая ложка');
+      expect(parse('1 ст л. соли').unit).to.equal('столовая ложка');
+      expect(parse('1 ст л соли').unit).to.equal('столовая ложка');
+      expect(parse('1 ст. л. соли').unit).to.equal('столовая ложка');
+      expect(parse('1 ст.л. соли').unit).to.equal('столовая ложка');
+      expect(parse('1 ст. ложка соли').unit).to.equal('столовая ложка');
+      expect(parse('1 ст ложка соли').unit).to.equal('столовая ложка');
+      expect(parse('1 столовая ложка соли').unit).to.equal('столовая ложка');
+      expect(parse('1 столовая соли').unit).to.equal('столовая ложка');
+      expect(parse('2 столовой ложки соли').unit).to.equal('столовая ложка');
+      expect(parse('5 столовых ложек соли').unit).to.equal('столовая ложка');
     });
     it('"1 стакан молока"', () => {
-      expect(parse('1 стакан молока', 'ru').unit).to.equal('стакан');
-      expect(parse('1 стакана молока', 'ru').unit).to.equal('стакан');
-      expect(parse('5 стаканов молока', 'ru').unit).to.equal('стакан');
+      expect(parse('1 стакан молока').unit).to.equal('стакан');
+      expect(parse('1 стакана молока').unit).to.equal('стакан');
+      expect(parse('5 стаканов молока').unit).to.equal('стакан');
     });
     it('"1 щепотка соли"', () => {
-      expect(parse('1 щепотка соли', 'ru').unit).to.equal('щепотка');
-      expect(parse('1 щепотки соли', 'ru').unit).to.equal('щепотка');
-      expect(parse('5 щепоток соли', 'ru').unit).to.equal('щепотка');
+      expect(parse('1 щепотка соли').unit).to.equal('щепотка');
+      expect(parse('1 щепотки соли').unit).to.equal('щепотка');
+      expect(parse('5 щепоток соли').unit).to.equal('щепотка');
     });
     it('"1 пучок петрушки"', () => {
-      expect(parse('1 пучок петрушки', 'ru').unit).to.equal('пучок');
-      expect(parse('1 пучка петрушки', 'ru').unit).to.equal('пучок');
-      expect(parse('1 пучков петрушки', 'ru').unit).to.equal('пучок');
+      expect(parse('1 пучок петрушки').unit).to.equal('пучок');
+      expect(parse('1 пучка петрушки').unit).to.equal('пучок');
+      expect(parse('1 пучков петрушки').unit).to.equal('пучок');
     });
     it('"1 штука огурца"', () => {
-      expect(parse('1 шт огурца', 'ru').unit).to.equal('штука');
-      expect(parse('1 шт. огурца', 'ru').unit).to.equal('штука');
-      expect(parse('1 штука огурца', 'ru').unit).to.equal('штука');
-      expect(parse('1 штуки огурца', 'ru').unit).to.equal('штука');
-      expect(parse('5 штук огурца', 'ru').unit).to.equal('штука');
+      expect(parse('1 шт огурца').unit).to.equal('штука');
+      expect(parse('1 шт. огурца').unit).to.equal('штука');
+      expect(parse('1 штука огурца').unit).to.equal('штука');
+      expect(parse('1 штуки огурца').unit).to.equal('штука');
+      expect(parse('5 штук огурца').unit).to.equal('штука');
     });
     it('"1 ломтик хлеба"', () => {
-      expect(parse('1 ломтик хлеба', 'ru').unit).to.equal('ломтик');
-      expect(parse('1 ломтика хлеба', 'ru').unit).to.equal('ломтик');
-      expect(parse('5 ломтиков хлеба', 'ru').unit).to.equal('ломтик');
+      expect(parse('1 ломтик хлеба').unit).to.equal('ломтик');
+      expect(parse('1 ломтика хлеба').unit).to.equal('ломтик');
+      expect(parse('5 ломтиков хлеба').unit).to.equal('ломтик');
     });
     it('"1 долька огурца"', () => {
-      expect(parse('1 долька огурца', 'ru').unit).to.equal('долька');
-      expect(parse('1 дольки огурца', 'ru').unit).to.equal('долька');
-      expect(parse('5 долек огурца', 'ru').unit).to.equal('долька');
+      expect(parse('1 долька огурца').unit).to.equal('долька');
+      expect(parse('1 дольки огурца').unit).to.equal('долька');
+      expect(parse('5 долек огурца').unit).to.equal('долька');
     });
     it('"1 банка огурцов"', () => {
-      expect(parse('1 банка огурцов', 'ru').unit).to.equal('банка');
-      expect(parse('1 банки огурцов', 'ru').unit).to.equal('банка');
-      expect(parse('5 банок огурцов', 'ru').unit).to.equal('банка');
+      expect(parse('1 банка огурцов').unit).to.equal('банка');
+      expect(parse('1 банки огурцов').unit).to.equal('банка');
+      expect(parse('5 банок огурцов').unit).to.equal('банка');
     });
     it('"1 упаковка соли"', () => {
-      expect(parse('1 упаковка соли', 'ru').unit).to.equal('упаковка');
-      expect(parse('1 упаковки соли', 'ru').unit).to.equal('упаковка');
-      expect(parse('5 упаковок соли', 'ru').unit).to.equal('упаковка');
+      expect(parse('1 упаковка соли').unit).to.equal('упаковка');
+      expect(parse('1 упаковки соли').unit).to.equal('упаковка');
+      expect(parse('5 упаковок соли').unit).to.equal('упаковка');
     });
     it('"1 кусок хлеба"', () => {
-      expect(parse('1 кусок хлеба', 'ru').unit).to.equal('кусок');
-      expect(parse('1 куска хлеба', 'ru').unit).to.equal('кусок');
-      expect(parse('5 кусков хлеба', 'ru').unit).to.equal('кусок');
+      expect(parse('1 кусок хлеба').unit).to.equal('кусок');
+      expect(parse('1 куска хлеба').unit).to.equal('кусок');
+      expect(parse('5 кусков хлеба').unit).to.equal('кусок');
     });
   });
 
   describe('translates the ingredient of', () => {
     it('"1 чайная ложка соли"', () => {
-      expect(parse('1 чайная ложка соли', 'ru').ingredient).to.equal('соли');
+      expect(parse('1 чайная ложка соли').ingredient).to.equal('соли');
     });
     it('"1 чайная ложка крупной соли"', () => {
-      expect(parse('1 чайная ложка крупной соли', 'ru').ingredient).to.equal('крупной соли');
+      expect(parse('1 чайная ложка крупной соли').ingredient).to.equal('крупной соли');
     });
   });
 
   it('"Хлеб белый тостовый - 6 кусочков"', () => {
-    expect(parse('Хлеб белый тостовый - 6 кусочков', 'ru')).to.deep.equal({
+    expect(parse('Хлеб белый тостовый - 6 кусочков')).to.deep.equal({
       unit: 'кусок',
       unitPlural: 'куски',
       symbol: null,
@@ -250,7 +250,7 @@ describe('recipe parser ru', () => {
   });
 
   it('"Помидоры - 2 шт."', () => {
-    expect(parse('Помидоры - 2 шт.', 'ru')).to.deep.equal({
+    expect(parse('Помидоры - 2 шт.')).to.deep.equal({
       unit: 'штука',
       unitPlural: 'штуки',
       symbol: 'шт',
@@ -263,7 +263,7 @@ describe('recipe parser ru', () => {
   });
 
   it('"Ветчина (готовая нарезка) - 6 ломтиков"', () => {
-    expect(parse('Ветчина (готовая нарезка) - 6 ломтиков', 'ru')).to.deep.equal({
+    expect(parse('Ветчина (готовая нарезка) - 6 ломтиков')).to.deep.equal({
       unit: 'ломтик',
       unitPlural: 'ломтики',
       symbol: null,
@@ -276,7 +276,7 @@ describe('recipe parser ru', () => {
   });
 
   it('"Грибы шампиньоны - 3-4 шт."', () => {
-    expect(parse('Грибы шампиньоны - 3-4 шт.', 'ru')).to.deep.equal({
+    expect(parse('Грибы шампиньоны - 3-4 шт.')).to.deep.equal({
       unit: 'штука',
       unitPlural: 'штуки',
       symbol: 'шт',
@@ -289,7 +289,7 @@ describe('recipe parser ru', () => {
   });
 
   it('"Чеснок - 3 зубчика"', () => {
-    expect(parse('Чеснок - 3 зубчика', 'ru')).to.deep.equal({
+    expect(parse('Чеснок - 3 зубчика')).to.deep.equal({
       unit: 'зубчик',
       unitPlural: 'зубчики',
       symbol: null,
@@ -302,7 +302,7 @@ describe('recipe parser ru', () => {
   });
 
   it('"Маскарпоне - 100 г"', () => {
-    expect(parse('Маскарпоне - 100 г', 'ru')).to.deep.equal({
+    expect(parse('Маскарпоне - 100 г')).to.deep.equal({
       unit: 'грамм',
       unitPlural: 'граммы',
       symbol: 'г',
@@ -315,7 +315,7 @@ describe('recipe parser ru', () => {
   });
 
   it('"Сыр моцарела тёртый"', () => {
-    expect(parse('сыр моцарела тёртый', 'ru')).to.deep.equal({
+    expect(parse('сыр моцарела тёртый')).to.deep.equal({
       unit: null,
       unitPlural: null,
       symbol: null,
@@ -328,7 +328,7 @@ describe('recipe parser ru', () => {
   });
 
   it('"Приправа «Тако» - 1 ½ ч. л."', () => {
-    expect(parse('Приправа «Тако» - 1 ½ ч. л.', 'ru')).to.deep.equal({
+    expect(parse('Приправа «Тако» - 1 ½ ч. л.')).to.deep.equal({
       unit: 'чайная ложка',
       unitPlural: 'чайные ложки',
       symbol: 'ч. л.',
@@ -341,7 +341,7 @@ describe('recipe parser ru', () => {
   });
 
   it('"Куриные грудки – 6 шт. (примерно по 170 г)"', () => {
-    expect(parse('Куриные грудки – 6 шт. (примерно по 170 г)', 'ru')).to.deep.equal({
+    expect(parse('Куриные грудки – 6 шт. (примерно по 170 г)')).to.deep.equal({
       unit: 'штука',
       unitPlural: 'штуки',
       symbol: 'шт',
@@ -354,7 +354,7 @@ describe('recipe parser ru', () => {
   });
 
   it('"Масло сливочное комнатной температуры - ¾ стакана (150 г)"', () => {
-    expect(parse('Масло сливочное комнатной температуры - ¾ стакана (150 г)', 'ru')).to.deep.equal({
+    expect(parse('Масло сливочное комнатной температуры - ¾ стакана (150 г)')).to.deep.equal({
       unit: 'стакан',
       unitPlural: 'стаканы',
       symbol: null,
@@ -367,7 +367,7 @@ describe('recipe parser ru', () => {
   });
 
   it('"Масло сливочное комнатной температуры - 1 и ¾ стакана"', () => {
-    expect(parse('Масло сливочное комнатной температуры - 1 и ¾ стакана', 'ru')).to.deep.equal({
+    expect(parse('Масло сливочное комнатной температуры - 1 и ¾ стакана')).to.deep.equal({
       unit: 'стакан',
       unitPlural: 'стаканы',
       symbol: null,
@@ -380,7 +380,7 @@ describe('recipe parser ru', () => {
   });
 
   it('"Масло сливочное комнатной температуры - 1 и¾ стакана"', () => {
-    expect(parse('Масло сливочное комнатной температуры - 1 и¾ стакана', 'ru')).to.deep.equal({
+    expect(parse('Масло сливочное комнатной температуры - 1 и¾ стакана')).to.deep.equal({
       unit: 'стакан',
       unitPlural: 'стаканы',
       symbol: null,
@@ -393,7 +393,7 @@ describe('recipe parser ru', () => {
   });
 
   it('"Масло сливочное комнатной температуры - 1и ¾ стакана"', () => {
-    expect(parse('Масло сливочное комнатной температуры - 1и ¾ стакана', 'ru')).to.deep.equal({
+    expect(parse('Масло сливочное комнатной температуры - 1и ¾ стакана')).to.deep.equal({
       unit: 'стакан',
       unitPlural: 'стаканы',
       symbol: null,
@@ -406,7 +406,7 @@ describe('recipe parser ru', () => {
   });
 
   it('"Масло сливочное комнатной температуры - 1и¾ стакана"', () => {
-    expect(parse('Масло сливочное комнатной температуры - 1и¾ стакана', 'ru')).to.deep.equal({
+    expect(parse('Масло сливочное комнатной температуры - 1и¾ стакана')).to.deep.equal({
       unit: 'стакан',
       unitPlural: 'стаканы',
       symbol: null,
@@ -419,7 +419,7 @@ describe('recipe parser ru', () => {
   });
 
   it('"Масло сливочное комнатной температуры - 1 и ¾стакана"', () => {
-    expect(parse('Масло сливочное комнатной температуры - 1 и ¾стакана', 'ru')).to.deep.equal({
+    expect(parse('Масло сливочное комнатной температуры - 1 и ¾стакана')).to.deep.equal({
       unit: 'стакан',
       unitPlural: 'стаканы',
       symbol: null,
@@ -432,7 +432,7 @@ describe('recipe parser ru', () => {
   });
 
   it('"Масло сливочное комнатной температуры - 1и¾стакана"', () => {
-    expect(parse('Масло сливочное комнатной температуры - 1и¾стакана', 'ru')).to.deep.equal({
+    expect(parse('Масло сливочное комнатной температуры - 1и¾стакана')).to.deep.equal({
       unit: 'стакан',
       unitPlural: 'стаканы',
       symbol: null,
@@ -445,7 +445,7 @@ describe('recipe parser ru', () => {
   });
 
   it('"Травы (рубленые) (петрушка, укроп и т. п.) - 2 ст. л."', () => {
-    expect(parse('Травы (рубленые) (петрушка, укроп и т. п.) - 2 ст. л.', 'ru')).to.deep.equal({
+    expect(parse('Травы (рубленые) (петрушка, укроп и т. п.) - 2 ст. л.')).to.deep.equal({
       unit: 'столовая ложка',
       unitPlural: 'столовые ложки',
       symbol: 'ст. л.',
@@ -458,7 +458,7 @@ describe('recipe parser ru', () => {
   });
 
   it('"Майонез (сметана) и резаный зеленый лук по желанию"', () => {
-    expect(parse('Майонез (сметана) и резаный зеленый лук по желанию', 'ru')).to.deep.equal({
+    expect(parse('Майонез (сметана) и резаный зеленый лук по желанию')).to.deep.equal({
       unit: 'по вкусу',
       unitPlural: 'по вкусу',
       symbol: null,
@@ -471,7 +471,7 @@ describe('recipe parser ru', () => {
   });
 
   it('"5 или 6 кусков сыра"', () => {
-    expect(parse('5 или 6 кусков сыра', 'ru')).to.deep.equal({
+    expect(parse('5 или 6 кусков сыра')).to.deep.equal({
       unit: 'кусок',
       unitPlural: 'куски',
       symbol: null,
@@ -484,7 +484,7 @@ describe('recipe parser ru', () => {
   });
 
   it('"5или6 кусков сыра"', () => {
-    expect(parse('5или6 кусков сыра', 'ru')).to.deep.equal({
+    expect(parse('5или6 кусков сыра')).to.deep.equal({
       unit: 'кусок',
       unitPlural: 'куски',
       symbol: null,
@@ -497,7 +497,7 @@ describe('recipe parser ru', () => {
   });
 
   it('"5 или6 кусков сыра"', () => {
-    expect(parse('5 или6 кусков сыра', 'ru')).to.deep.equal({
+    expect(parse('5 или6 кусков сыра')).to.deep.equal({
       unit: 'кусок',
       unitPlural: 'куски',
       symbol: null,
@@ -510,7 +510,7 @@ describe('recipe parser ru', () => {
   });
 
   it('"5или 6 кусков сыра"', () => {
-    expect(parse('5или 6 кусков сыра', 'ru')).to.deep.equal({
+    expect(parse('5или 6 кусков сыра')).to.deep.equal({
       unit: 'кусок',
       unitPlural: 'куски',
       symbol: null,
@@ -523,7 +523,7 @@ describe('recipe parser ru', () => {
   });
 
   it('"5 или 6кусков сыра"', () => {
-    expect(parse('5 или 6кусков сыра', 'ru')).to.deep.equal({
+    expect(parse('5 или 6кусков сыра')).to.deep.equal({
       unit: 'кусок',
       unitPlural: 'куски',
       symbol: null,
@@ -536,7 +536,7 @@ describe('recipe parser ru', () => {
   });
 
   it('"Сыр твердый (по желанию) - 100 г (по вкусу)"', () => {
-    expect(parse('Сыр твердый (по желанию) - 100 г (по вкусу)', 'ru')).to.deep.equal({
+    expect(parse('Сыр твердый (по желанию) - 100 г (по вкусу)')).to.deep.equal({
       unit: 'грамм',
       unitPlural: 'граммы',
       symbol: 'г',
@@ -549,7 +549,7 @@ describe('recipe parser ru', () => {
   });
 
   it('"Масло подсолнечное рафинированное - 60-75 г (4-5 ст. л.)"', () => {
-    expect(parse('Масло подсолнечное рафинированное - 60-75 г (4-5 ст. л.)', 'ru')).to.deep.equal({
+    expect(parse('Масло подсолнечное рафинированное - 60-75 г (4-5 ст. л.)')).to.deep.equal({
       unit: 'столовая ложка',
       unitPlural: 'столовые ложки',
       symbol: 'ст. л.',
@@ -562,7 +562,7 @@ describe('recipe parser ru', () => {
   });
 
   it('"Чеснок (нечищеный) - 2 головки (около 20 зубков)"', () => {
-    expect(parse('Чеснок (нечищеный) - 2 головки (около 20 зубков)', 'ru')).to.deep.equal({
+    expect(parse('Чеснок (нечищеный) - 2 головки (около 20 зубков)')).to.deep.equal({
       unit: 'зубчик',
       unitPlural: 'зубчики',
       symbol: null,
@@ -575,7 +575,7 @@ describe('recipe parser ru', () => {
   });
 
   it('"Мята свежая (рубленая) - 0,25 стакана"', () => {
-    expect(parse('Мята свежая (рубленая) - 0,25 стакана', 'ru')).to.deep.equal({
+    expect(parse('Мята свежая (рубленая) - 0,25 стакана')).to.deep.equal({
       unit: 'стакан',
       unitPlural: 'стаканы',
       symbol: null,
@@ -588,7 +588,7 @@ describe('recipe parser ru', () => {
   });
 
   it('"Мята свежая (рубленая) - 1,25 и 1/3 стакана"', () => {
-    expect(parse('Мята свежая (рубленая) - 1 и 1/3 стакана', 'ru')).to.deep.equal({
+    expect(parse('Мята свежая (рубленая) - 1 и 1/3 стакана')).to.deep.equal({
       unit: 'стакан',
       unitPlural: 'стаканы',
       symbol: null,
@@ -601,7 +601,7 @@ describe('recipe parser ru', () => {
   });
 
   it('"Зелень петрушки (измельчённая) — 1 жменька"', () => {
-    expect(parse('Зелень петрушки (измельчённая) — 1 жменька', 'ru')).to.deep.equal({
+    expect(parse('Зелень петрушки (измельчённая) — 1 жменька')).to.deep.equal({
       unit: 'жменька',
       unitPlural: 'жменьки',
       symbol: null,
@@ -614,7 +614,7 @@ describe('recipe parser ru', () => {
   });
 
   it('"Чеснок — 4 зубка"', () => {
-    expect(parse('Чеснок — 4 зубка', 'ru')).to.deep.equal({
+    expect(parse('Чеснок — 4 зубка')).to.deep.equal({
       unit: 'зубчик',
       unitPlural: 'зубчики',
       symbol: null,
@@ -627,7 +627,7 @@ describe('recipe parser ru', () => {
   });
 
   it('"молоко или сметана"', () => {
-    expect(parse('молоко или сметана', 'ru')).to.deep.equal({
+    expect(parse('молоко или сметана')).to.deep.equal({
       unit: null,
       unitPlural: null,
       symbol: null,
@@ -640,7 +640,7 @@ describe('recipe parser ru', () => {
   });
 
   it('"3 ч. л. сметаны"', () => {
-    expect(parse('3 ч. л. сметаны', 'ru')).to.deep.equal({
+    expect(parse('3 ч. л. сметаны')).to.deep.equal({
       unit: 'чайная ложка',
       unitPlural: 'чайные ложки',
       symbol: 'ч. л.',
@@ -653,7 +653,7 @@ describe('recipe parser ru', () => {
   });
 
   it('"Укроп свежий - 2-3 веточки"', () => {
-    expect(parse('Укроп свежий - 2-3 веточки', 'ru')).to.deep.equal({
+    expect(parse('Укроп свежий - 2-3 веточки')).to.deep.equal({
       unit: 'веточка',
       unitPlural: 'веточки',
       symbol: null,
@@ -666,7 +666,7 @@ describe('recipe parser ru', () => {
   });
 
   it('"Сахар - 1стакан"', () => {
-    expect(parse('Сахар - 1стакан', 'ru')).to.deep.equal({
+    expect(parse('Сахар - 1стакан')).to.deep.equal({
       unit: 'стакан',
       unitPlural: 'стаканы',
       symbol: null,
@@ -679,7 +679,7 @@ describe('recipe parser ru', () => {
   });
 
   it('"хмели-сунели - 100 гр"', () => {
-    expect(parse('хмели-сунели - 100 гр', 'ru')).to.deep.equal({
+    expect(parse('хмели-сунели - 100 гр')).to.deep.equal({
       unit: 'грамм',
       unitPlural: 'граммы',
       symbol: 'г',
@@ -692,7 +692,7 @@ describe('recipe parser ru', () => {
   });
 
   it('"Нут консервированный (без жидкости) – 1 банка (420 г)"', () => {
-    expect(parse('Нут консервированный (без жидкости) – 1 банка (420 г)', 'ru')).to.deep.equal({
+    expect(parse('Нут консервированный (без жидкости) – 1 банка (420 г)')).to.deep.equal({
       unit: 'грамм',
       unitPlural: 'граммы',
       symbol: 'г',
@@ -705,7 +705,7 @@ describe('recipe parser ru', () => {
   });
 
   it('"Тортеллини (итальянские пельмени) с сыром, приготовленные согласно инструкции на упаковке и охлажденные – 1 упаковка (560 г)"', () => {
-    expect(parse('Тортеллини (итальянские пельмени) с сыром, приготовленные согласно инструкции на упаковке и охлажденные – 1 упаковка (560 г)', 'ru')).to.deep.equal({
+    expect(parse('Тортеллини (итальянские пельмени) с сыром, приготовленные согласно инструкции на упаковке и охлажденные – 1 упаковка (560 г)')).to.deep.equal({
       unit: 'грамм',
       unitPlural: 'граммы',
       symbol: 'г',
@@ -718,7 +718,7 @@ describe('recipe parser ru', () => {
   });
 
   it('"Соль - 0,5 чайной ложки"', () => {
-    expect(parse('Соль - 0,5 чайной ложки', 'ru')).to.deep.equal({
+    expect(parse('Соль - 0,5 чайной ложки')).to.deep.equal({
       unit: 'чайная ложка',
       unitPlural: 'чайные ложки',
       symbol: 'ч. л.',
@@ -731,7 +731,7 @@ describe('recipe parser ru', () => {
   });
 
   it('"Ванилин - 1 пакетик (2 г)"', () => {
-    expect(parse('Ванилин - 1 пакетик (2 г)', 'ru')).to.deep.equal({
+    expect(parse('Ванилин - 1 пакетик (2 г)')).to.deep.equal({
       unit: 'грамм',
       unitPlural: 'граммы',
       symbol: 'г',

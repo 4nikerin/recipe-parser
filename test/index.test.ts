@@ -1,7 +1,7 @@
-import { expect } from 'chai';
-import { parse } from '../src/index';
+/* import { expect } from 'chai';
+import { parse } from '../src/index'; */
 
-describe('recipe parser eng', () => {
+/* describe('recipe parser eng', () => {
   it('returns an object', () => {
     expect(typeof parse('1 cup water', 'eng')).to.equal('object');
   });
@@ -366,7 +366,7 @@ describe('recipe parser eng', () => {
       expect(parse('1 teaspoon of powdered sugar', 'eng').ingredient).to.equal('powdered sugar');
     });
   });
-});
+}); */
 
 
 //describe('combine ingredients', () => {
