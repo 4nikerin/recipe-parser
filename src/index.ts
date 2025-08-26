@@ -174,13 +174,46 @@ export interface Ingredient {
   maxQty: string | null;
 }
 
-const repeatingFractions = {
-  [333]: '1/3',
-  [666]: '2/3',
-  [111]: '1/9',
-  [166]: '1/6',
-  [833]: '5/6'
-} as { [key: string]: string };
+export const ruSmall: { [key: string]: number } = {
+  'ноль': 0,
+  'один': 1,
+  'одна': 1,
+  'одно': 1,
+  'два': 2,
+  'три': 3,
+  'четыре': 4,
+  'пять': 5,
+  'шесть': 6,
+  'семь': 7,
+  'восемь': 8,
+  'девять': 9,
+  'десять': 10,
+  'одиннадцать': 11,
+  'двенадцать': 12,
+  'тринадцать': 13,
+  'четырнадцать': 14,
+  'пятьнадцать': 15,
+  'шестьнадцать': 16,
+  'семьнадцать': 17,
+  'восемьнадцать': 18,
+  'девятьнадцать': 19,
+  'двадцать': 20,
+  'тридцать': 30,
+  'сорок': 40,
+  'пятьдесят': 50,
+  'шестьдесят': 60,
+  'семьдесят': 70,
+  'восемьдесят': 80,
+  'девяносто': 90
+};
+
+export const ruMagnitude: { [key: string]: number } = {
+  'сто': 100,
+  'тысяча': 1000,
+  'миллион': 1000000,
+  'миллиард': 1000000000,
+  'триллион': 1000000000000,
+};
 
 const prepositions = ['примерно', 'из', 'без', 'от', 'по', 'для', 'с', 'со', 'на', 'в', 'к', 'о', 'об', 'у', 'при', 'около'];
 
@@ -223,45 +256,6 @@ const unicodeObj: { [key: string]: string } = {
   '⅑': '1/9',
   '⅒': '1/10'
 };
-
-// function text2num(s: string, language: string) {
-//   const a = s.toString().split(/[\s-]+/);
-//   let values: number[] = [0, 0];
-//   a.forEach(x => {
-//     values = feach(x, values[0], values[1], language)
-//   });
-//   if (values[0] + values[1] < 0)
-//     return null
-//   else
-//     return values[0] + values[1];
-// }
-
-// function feach(w: string, g: number, n: number, language: string) {
-//   let number = numbersMap.get(language)
-//   let small = number[0]
-//   let magnitude = number[1]
-//   var x = small[w];
-//   if (x != null) {
-//     g = g + x;
-//   }
-//   else if (100 == magnitude[w]) {
-//     if (g > 0)
-//       g = g * 100;
-//     else
-//       g = 100
-//   }
-//   else {
-//     x = magnitude[w];
-//     if (x != null) {
-//       n = n + g * x
-//       g = 0;
-//     }
-//     else
-//       return [-1, -1]
-
-//   }
-//   return [g, n]
-// }
 
 function fixNumber(quantity: string | undefined) {
   if (quantity?.match(/^\d+([\.,]\d+)?$/)) {
@@ -401,104 +395,4 @@ export function parse(recipeString: string) {
     minQty: minQty == null ? null : +minQty,
     maxQty: maxQty == null ? null : +maxQty,
   };
-}
-
-export function combine(ingredientArray: Ingredient[]) {
-  const combinedIngredients = ingredientArray.reduce((acc, ingredient) => {
-    const key = ingredient.ingredient + ingredient.unit; // when combining different units, remove this from the key and just use the name
-    const existingIngredient = acc[key];
-
-    if (existingIngredient) {
-      return Object.assign(acc, {
-        [key]: combineTwoIngredients(existingIngredient, ingredient),
-      });
-    } else {
-      return Object.assign(acc, { [key]: ingredient });
-    }
-  }, {} as { [key: string]: Ingredient });
-
-  return Object.keys(combinedIngredients)
-    .reduce((acc, key) => {
-      const ingredient = combinedIngredients[key];
-      return acc.concat(ingredient);
-    }, [] as Ingredient[])
-    .sort(compareIngredients);
-}
-
-export function prettyPrintingPress(ingredient: Ingredient) {
-  let quantity = "";
-  let unit = ingredient.unit;
-  if (ingredient.quantity) {
-    const [whole, remainder] = ingredient.quantity.split(".");
-    if (+whole !== 0 && typeof whole !== "undefined") {
-      quantity = whole;
-    }
-    if (+remainder !== 0 && typeof remainder !== "undefined") {
-      let fractional;
-      if (repeatingFractions[remainder]) {
-        fractional = repeatingFractions[remainder];
-      } else {
-        const fraction = "0." + remainder;
-        const len = fraction.length - 2;
-        let denominator = Math.pow(10, len);
-        let numerator = +fraction * denominator;
-
-        const divisor = gcd(numerator, denominator);
-
-        numerator /= divisor;
-        denominator /= divisor;
-        fractional = Math.floor(numerator) + "/" + Math.floor(denominator);
-      }
-
-      quantity += quantity ? " " + fractional : fractional;
-    }
-    /* if (((+whole !== 0 && typeof remainder !== 'undefined') || +whole > 1) && unit) {
-      unit = nounInflector.pluralize(unit);
-    }*/
-  } else {
-    return ingredient.ingredient;
-  }
-
-  return `${quantity}${unit ? " " + unit : ""} ${ingredient.ingredient}`;
-}
-
-function gcd(a: number, b: number): number {
-  if (b < 0.0000001) {
-    return a;
-  }
-
-  return gcd(b, Math.floor(a % b));
-}
-
-// TODO: Maybe change this to existingIngredients: Ingredient | Ingredient[]
-function combineTwoIngredients(
-  existingIngredients: Ingredient,
-  ingredient: Ingredient
-): Ingredient {
-  const quantity =
-    existingIngredients.quantity && ingredient.quantity
-      ? (
-          Number(existingIngredients.quantity) + Number(ingredient.quantity)
-        ).toString()
-      : null;
-  const minQty =
-    existingIngredients.minQty && ingredient.minQty
-      ? (
-          Number(existingIngredients.minQty) + Number(ingredient.minQty)
-        ).toString()
-      : null;
-  const maxQty =
-    existingIngredients.maxQty && ingredient.maxQty
-      ? (
-          Number(existingIngredients.maxQty) + Number(ingredient.maxQty)
-        ).toString()
-      : null;
-  return Object.assign({}, existingIngredients, { quantity, minQty, maxQty });
-}
-
-function compareIngredients(a: Ingredient, b: Ingredient) {
-  if (a.ingredient === b.ingredient) {
-    return 0;
-  }
-  return a.ingredient < b.ingredient ? -1 : 1;
 }
